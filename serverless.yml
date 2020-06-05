@@ -1,0 +1,199 @@
+service: signature-extractor
+
+
+provider:
+  name: aws
+  runtime: python3.7
+  stage: local
+  region: us-west-2
+  timeout: 15
+  tags:
+    env: ${self:custom.stage}
+  environment:
+    S3_BUCKET: 'voteamerica-signature-extractor'
+    S3_PREFIX: ${self:custom.stage}
+    DYNAMODB_TABLE: ${self:custom.tableName}
+    SENTRY_DSN: https://3948bdb4795a4faebf93fa981155b472@o335887.ingest.sentry.io/5219667
+    SENTRY_ENVIRONMENT: ${self:custom.stage}
+    TWILIO_CALLBACK_URL: ${self:custom.twilioCallbackUrl.${self:custom.stage}}
+    TWILIO_SID: ${ssm:signature_extractor.common.twilio_sid~true}
+    TWILIO_AUTH_TOKEN: ${ssm:signature_extractor.common.twilio_auth_token~true}
+    TWILIO_PHONE_NUMBER: ${self:custom.twilioPhoneNumber.${self:custom.stage}}
+  resourcePolicy:
+    - Effect: Allow
+      Principal: "*"
+      Action: execute-api:Invoke
+      Resource:
+        - execute-api:/*/*/*
+      Condition:
+        IpAddress:
+          aws:SourceIp: ${self:custom.ipWhitelist.${self:custom.stage}}
+
+  # We don't actually need more memory, but CPU scales with memory and we do
+  # need more CPU.
+  memorySize: 3008
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:ListBucket"
+      Resource: "arn:aws:s3:::voteamerica-signature-extractor"
+    - Effect: "Allow"
+      Action:
+        - "s3:PutObject"
+      Resource: "arn:aws:s3:::voteamerica-signature-extractor/*"
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource:
+        - "Fn::GetAtt": [ ConnectionsTable, Arn ]
+
+package:
+  exclude:
+    - 'node_modules/**'
+    - '.vscode/**'
+    - '.mypy_cache/**'
+    - 'samples/**'
+    - 'package.json'
+    - 'yarn.lock'
+    - 'frontend/**'
+
+functions:
+  extract_signature:
+    handler: lambda_entry.handler.extract
+    memorySize: 3008
+    timeout: 30
+    events:
+      - http:
+          method: POST
+          path: /extract_signature
+          contentHandling: CONVERT_TO_BINARY
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Accept
+            allowCredentials: false
+  post_mms_init:
+    handler: lambda_entry.handler.post_mms_init
+    memorySize: 256
+    events:
+      - http:
+          method: POST
+          path: /mms/init
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Accept
+            allowCredentials: false
+  get_mms_check:
+    handler: lambda_entry.handler.get_mms_check
+    memorySize: 256
+    events:
+      - http:
+          method: GET
+          path: /mms/check
+          contentHandling: CONVERT_TO_BINARY
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Accept
+            allowCredentials: false
+  twilio:
+    handler: lambda_entry.handler.twilio_mms
+    memorySize: 256
+    events:
+      - http:
+          method: POST
+          path: /twilio_mms
+
+
+plugins:
+  # This plugin configured API Gateway to accept binary requests
+  - serverless-apigw-binary
+  # This one installs our python dependencies, using docker to properly compile
+  # them for Lambda
+  - serverless-python-requirements
+  # Datadog integration
+  - serverless-plugin-datadog
+  # Custom domains
+  - serverless-domain-manager
+  # Clean up old versions so we don't exceed our code storage quota
+  - serverless-prune-plugin
+
+custom:
+  apigwBinary:
+    types:
+      - 'image/jpeg'
+      - 'image/*'
+  pythonRequirements:
+    dockerizePip: true
+    noDeploy: [
+      'boto3',
+      'botocore',
+      'docutils',
+      'jmespath',
+      'python-dateutil',
+      's3transfer',
+      'six',
+      'pip',
+      'setuptools'
+    ]
+  twilioCallbackUrl:
+    local: https://signature-extractor-local.voteamerica.io/twilio_mms
+    dev: https://signature-extractor-dev.voteamerica.io/twilio_mms
+    prod: https://signature-extractor.voteamerica.com/twilio_mms
+  twilioPhoneNumber:
+    local: +13513334645
+    dev: +15854438683
+    prod: +14157047705
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+  tableName: esign-connections-${self:custom.stage}
+  datadog:
+    flushMetricsToLogs: true
+  customDomain:
+    domainName: signature-extractor-${self:custom.stage}.voteamerica.io
+  prune:
+    automatic: true
+    number: 3
+  ipWhitelist:
+    local:
+      - 0.0.0.0/0
+    dev:
+      - 0.0.0.0/0
+    prod:
+      # Cloudflare IPs
+      - 173.245.48.0/20
+      - 103.21.244.0/22
+      - 103.22.200.0/22
+      - 103.31.4.0/22
+      - 141.101.64.0/18
+      - 108.162.192.0/18
+      - 190.93.240.0/20
+      - 188.114.96.0/20
+      - 197.234.240.0/22
+      - 198.41.128.0/17
+      - 162.158.0.0/15
+      - 104.16.0.0/12
+      - 172.64.0.0/13
+      - 131.0.72.0/22
+
+resources:
+  Resources:
+    ConnectionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        AttributeDefinitions:
+          - AttributeName: phone
+            AttributeType: S
+        KeySchema:
+          - AttributeName: phone
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true

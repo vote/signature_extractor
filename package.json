@@ -1,0 +1,25 @@
+{
+  "name": "signature-extractor",
+  "version": "1.0.0",
+  "repository": "git@github.com:vote/signature-extractor.git",
+  "private": true,
+  "dependencies": {
+    "serverless": "^1.67.3",
+    "serverless-apigw-binary": "UnitedIncome/serverless-apigw-binary#ac62ae97766909572585f6cd901c6d8769ef4dd9",
+    "serverless-python-requirements": "^5.1.0"
+  },
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "serverless-domain-manager": "^3.3.2",
+    "serverless-plugin-datadog": "^0.24.0",
+    "serverless-prune-plugin": "^1.4.2"
+  },
+  "scripts": {
+    "sls": "serverless"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pipenv run format"
+    }
+  }
+}

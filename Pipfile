@@ -1,0 +1,35 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+black = "*"
+mypy = "*"
+autoflake = "*"
+isort = "*"
+
+[packages]
+opencv-python-headless = "*"
+numpy = "*"
+smalluuid = "*"
+boto3 = "*"
+twilio = "*"
+requests = "*"
+sentry-sdk = "*"
+
+[requires]
+python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true
+
+[scripts]
+samples = "bash -c 'rm -f ./samples/images/*.out.jpg && PYTHONPATH=. python -m samples.process_all ./samples/images/*.jpg'"
+local_samples = "bash -c 'rm -f ./samples/local/images/*.out.jpg && PYTHONPATH=. python -m samples.process_all ./samples/local/images/*-input.jpg'"
+single_sample = "bash -c 'rm -f ./samples/images/easy1.out.jpg && PYTHONPATH=. python -m samples.process_all ./samples/images/easy1.jpg'"
+autoflake = "autoflake --remove-unused-variables --remove-all-unused-imports --ignore-init-module-imports --exclude .serverless,node_modules,frontend ."
+isort = "isort --recursive --skip .serverless --skip node_modules --skip frontend ."
+black = "black ."
+mypy = "mypy ."
+format = "bash -c 'pipenv run autoflake && pipenv run isort && pipenv run black'"

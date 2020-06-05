@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="1000" height="1000" viewBox="0, 0, 1000, 1000">
+  <g id="Layer_1">
+    <path d="M829.5,500 C829.5,681.978 681.978,829.5 500,829.5 C318.022,829.5 170.5,681.978 170.5,500 C170.5,318.022 318.022,170.5 500,170.5 C681.978,170.5 829.5,318.022 829.5,500 z" fill="#F7F7F7"/>
+    <path d="M259,686 L259,864 M347,620 L347,864 M435,686 L435,864 M523,724 L523,864 M611,640 L611,864 M699,570 L699,864" fill-opacity="0" stroke="#D2D2D2" stroke-width="35" stroke-miterlimit="10"/>
+    <path d="M180,754 L347,620 L524,718 L828,465" fill-opacity="0" stroke="#EC3420" stroke-width="46" stroke-miterlimit="10"/>
+    <path d="M723,449 L841,449 L841,570" fill-opacity="0" stroke="#EC3420" stroke-width="44" stroke-miterlimit="10"/>
+    <path d="M375,621.5 C375,636.688 362.688,649 347.5,649 C332.312,649 320,636.688 320,621.5 C320,606.312 332.312,594 347.5,594 C362.688,594 375,606.312 375,621.5 z" fill-opacity="0" stroke="#0A0A0A" stroke-width="10" stroke-miterlimit="10"/>
+    <path d="M286,690.5 C286,705.688 273.688,718 258.5,718 C243.312,718 231,705.688 231,690.5 C231,675.312 243.312,663 258.5,663 C273.688,663 286,675.312 286,690.5 z" fill-opacity="0" stroke="#0A0A0A" stroke-width="10" stroke-miterlimit="10"/>
+    <path d="M463,669.5 C463,684.688 450.688,697 435.5,697 C420.312,697 408,684.688 408,669.5 C408,654.312 420.312,642 435.5,642 C450.688,642 463,654.312 463,669.5 z" fill-opacity="0" stroke="#0A0A0A" stroke-width="10" stroke-miterlimit="10"/>
+    <path d="M551,718.5 C551,733.688 538.688,746 523.5,746 C508.312,746 496,733.688 496,718.5 C496,703.312 508.312,691 523.5,691 C538.688,691 551,703.312 551,718.5 z" fill-opacity="0" stroke="#0A0A0A" stroke-width="10" stroke-miterlimit="10"/>
+    <path d="M636,648.5 C636,663.688 623.688,676 608.5,676 C593.312,676 581,663.688 581,648.5 C581,633.312 593.312,621 608.5,621 C623.688,621 636,633.312 636,648.5 z" fill-opacity="0" stroke="#0A0A0A" stroke-width="10" stroke-miterlimit="10"/>
+    <path d="M723,576.5 C723,591.688 710.688,604 695.5,604 C680.312,604 668,591.688 668,576.5 C668,561.312 680.312,549 695.5,549 C710.688,549 723,561.312 723,576.5 z" fill-opacity="0" stroke="#0A0A0A" stroke-width="10" stroke-miterlimit="10"/>
+  </g>
+</svg>
