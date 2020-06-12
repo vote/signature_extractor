@@ -89,7 +89,7 @@ to the voter's ballot being rejected because their physical signature on the bal
 of this signature extractor code. We, along with
 [other](https://www.aclu.org/blog/voting-rights/signature-match-laws-disproportionately-impact-voters-already-margins) 
 [organizations](https://www.democracydocket.com/2020/05/safeguard-voting-rights-with-vbm/), 
-hope that these rules will change, but for now we need to carefull weight any improvements in our technology
+hope that these rules will change, but for now we need to carefully weight any improvements in our technology
 with the potential downsides of creating more confusing failure modes.
 
 ## Development
