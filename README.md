@@ -48,6 +48,7 @@ We'd like to improve:
 - Handling really sharp or intense shadows
 - Handling very textured backgrounds
 - Removing lines from lined paper
+- Detecting possible errors -- sending back a warning if it looks like the photo might not be of a signature (the most common things we see are folks submitting selfies, or photos of their driver's license). We'd love to be able to surface a warning in our UI like "It looks like you took a photo of yourself -- make sure you took a photo of your written signature").
 
 We have a pretty extensive set of sample pictures of signatures in
 `samples/images`. They're grouped into three sections: `easy`, which are
@@ -55,6 +56,41 @@ photos that we can already handle pretty well (but there's still room
 for improvement on some of them!), `med`, which are photos that we're getting
 closer to being able to handle but need improvement, and `hard`, which are
 photos that we don't handle well at all yet (like photos on lined paper).
+
+One specific idea we have to to automatically tune the parameters in `extractor/params.py`.
+We might be able to do this by manually creating ground-truth data (by manually editing the
+sample signatures in Photoshop or something to create "perfectly" extracted signatures),
+and then finding the optimal values for the parameters via grid search.
+
+We're also interested in removing the step in our UI where we ask users to crop and rotate the
+image before submitting it to this signature extractor. Ideally, the user could just submit a photo
+and we'd automatically crop and rotate it to just include the signature by running a classifier/detector
+to identify where the signature is and try to rotate it to be right-side up. We'd probably still let the
+user manually adjust the cropping and rotation, so this might need to be a separate function that takes a
+photo and returns the best-guess cropping and rotation for the user to confirm.
+
+With all of these improvements, it's extremely important to think about the failure cases and end-user
+experience. For example, take the problem of removing lines from lined paper. Right now, if you submit
+a photo on lined paper, you get back an extracted signature that has those lines in it. This isn't great --
+it's not a usable signature -- but it's very clear from looking at it what went wrong, and the user
+will probably look at the extracted photo with the lines, be able to realize that they need to re-take the
+photo on unlined paper, and try again. If we implement a very fancy system to remove those lines that works in
+90% of cases, but in the other 10% removes bits of the signature, that's going to be much more confusing to
+those 10% of users -- it won't be immediately clear why their signature isn't being processed correctly, or
+how they can fix it. In all cases, we want to produce a signature that is either correctly extracted, or is
+incorrect in some obvious way that the user can understand and fix. So while all of these more advanced
+features are something that we're interested in exploring and testing, we may not be able to accept implementations
+if we think that they'll produce more confusing failure modes for even a small percentage of users -- remember that
+errors and incorrect results here can directly disenfranchise the voters we're trying to help, and we take
+that responsibility very seriously. Many states compare the signature on the ballot request form (which is what
+we use this signature extractor help voters prepare) to the signature on the ballot itself, and will reject
+the ballot if the signature doesn't match. So if this code messes up and changes the signature, it can lead
+to the voter's ballot being rejected because their physical signature on the ballot doesn't match the result
+of this signature extractor code. We, along with
+[other](https://www.aclu.org/blog/voting-rights/signature-match-laws-disproportionately-impact-voters-already-margins) 
+[organizations](https://www.democracydocket.com/2020/05/safeguard-voting-rights-with-vbm/), 
+hope that these rules will change, but for now we need to carefully weight any improvements in our technology
+with the potential downsides of creating more confusing failure modes.
 
 ## Development
 
