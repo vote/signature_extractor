@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from typing import List
 
 from .crop import autocrop, resize_fixed_aspect
 from .debug import Debug
@@ -32,3 +33,20 @@ def extract_signature(
         )
 
     return img
+
+
+def qualify_signature(img: np.ndarray, bw=False, enable_debug=False) -> List[str]:
+    """
+    Performs some post-checks on an extracted signature and returns a list of flags or warnings (strings)
+    """
+    result = []
+
+    # PA wants > 2% and < 90% black pixels
+    if bw:
+        white = float(cv2.countNonZero(img)) / float(img.shape[0] * img.shape[1])
+        if white <= 0.1:
+            result.append("PA_TOO_MANY_BLACK_PIXELS")
+        elif white >= .98:
+            result.append("PA_TOO_FEW_BLACK_PIXELS")
+
+    return result
