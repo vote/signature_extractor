@@ -48,3 +48,8 @@ THRESHOLD_CONSTANT_TOWARDS_WHITE = 10
 
 # When cropping the final result, ignore contours smaller than this area
 CROP_CONTOUR_THRESHOLD = 2500
+
+# Optional B&W conversion: block size (size of area around pixel to examine)
+# and constant.
+BW_THRESHOLD_BLOCK_SIZE = 101
+BW_THRESHOLD_CONSTANT_TOWARDS_WHITE = 10

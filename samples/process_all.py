@@ -9,6 +9,12 @@ from extractor.extract import extract_signature
 
 DEBUG = os.environ.get("DEBUG") == "1"
 
+RESIZE = os.environ.get("RESIZE")
+if RESIZE:
+    RESIZE = tuple([int(d) for d in RESIZE.split("x")])
+
+BW = os.environ.get("BW") == "1"
+
 
 def process_file(name: str):
     print(name)
@@ -17,7 +23,9 @@ def process_file(name: str):
     basename, ext = os.path.splitext(name)
     outname = basename + ".out" + ext
 
-    cv2.imwrite(outname, extract_signature(img, enable_debug=DEBUG))
+    cv2.imwrite(
+        outname, extract_signature(img, final_size=RESIZE, bw=BW, enable_debug=DEBUG)
+    )
 
 
 def main():
