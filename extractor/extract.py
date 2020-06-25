@@ -4,7 +4,7 @@ from typing import List
 
 from .crop import autocrop, resize_fixed_aspect
 from .debug import Debug
-from .params import BW_THRESHOLD_BLOCK_SIZE, BW_THRESHOLD_CONSTANT_TOWARDS_WHITE
+from .params import BW_THRESHOLD
 from .preprocess import resize_and_recolor
 from .threshold import threshold
 
@@ -23,14 +23,7 @@ def extract_signature(
     if final_size:
         img = resize_fixed_aspect(img, final_size=final_size, debug=debug)
     if bw:
-        img = cv2.adaptiveThreshold(
-            img,
-            255,
-            cv2.ADAPTIVE_THRESH_MEAN_C,
-            cv2.THRESH_BINARY,
-            BW_THRESHOLD_BLOCK_SIZE,
-            BW_THRESHOLD_CONSTANT_TOWARDS_WHITE,
-        )
+        _, img = cv2.threshold(img, BW_THRESHOLD, 255, cv2.THRESH_BINARY)
 
     return img
 
@@ -46,7 +39,7 @@ def qualify_signature(img: np.ndarray, bw=False, enable_debug=False) -> List[str
         white = float(cv2.countNonZero(img)) / float(img.shape[0] * img.shape[1])
         if white <= 0.1:
             result.append("PA_TOO_MANY_BLACK_PIXELS")
-        elif white >= .98:
+        elif white >= 0.98:
             result.append("PA_TOO_FEW_BLACK_PIXELS")
 
     return result
