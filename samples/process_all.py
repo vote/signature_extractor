@@ -9,9 +9,10 @@ from extractor.extract import extract_signature, qualify_signature
 
 DEBUG = os.environ.get("DEBUG") == "1"
 
-RESIZE = os.environ.get("RESIZE")
-if RESIZE:
-    RESIZE = tuple([int(d) for d in RESIZE.split("x")])
+RESIZE = None
+tmp = os.environ.get("RESIZE")
+if tmp:
+    RESIZE = tuple([int(d) for d in tmp.split("x")])
 
 BW = os.environ.get("BW") == "1"
 
