@@ -44,3 +44,33 @@ def autocrop(img, debug: Debug):
     debug.show("Cropped", cropped)
 
     return cropped
+
+
+def resize_fixed_aspect(img, final_size, debug: Debug):
+    (h, w) = img.shape[0:2]
+    target_w, target_h = final_size
+
+    # Resize
+    aspect_ratio = float(w) / float(h)
+    target_ratio = float(target_w) / float(target_h)
+    if aspect_ratio >= target_ratio:
+        nw = target_w
+        nh = int(h * (target_w / w))
+    else:
+        nw = int(w * (target_h / h))
+        nh = target_h
+    resized = cv2.resize(img, (nw, nh), interpolation=cv2.INTER_LINEAR)
+
+    # Pad right/bottom with white
+    if nw < target_w:
+        final = cv2.copyMakeBorder(
+            resized, 0, 0, 0, target_w - nw, cv2.BORDER_CONSTANT, value=[255, 255, 255]
+        )
+    elif nh < target_h:
+        final = cv2.copyMakeBorder(
+            resized, 0, target_h - nh, 0, 0, cv2.BORDER_CONSTANT, value=[255, 255, 255]
+        )
+    else:
+        final = resized
+
+    return final

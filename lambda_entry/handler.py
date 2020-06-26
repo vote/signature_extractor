@@ -19,7 +19,7 @@ from twilio.request_validator import RequestValidator
 from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 
-from extractor.extract import extract_signature
+from extractor.extract import extract_signature, qualify_signature
 
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.environ["DYNAMODB_TABLE"])
@@ -84,9 +84,17 @@ def extract(event: Any, context: Any):
         input_arr, cv2.IMREAD_COLOR + cv2.IMREAD_IGNORE_ORIENTATION
     )
 
-    output_image = extract_signature(input_image)
+    final_size = None
+    val = event["headers"].get("x-voteamerica-resize-to")
+    if val:
+        final_size = tuple([int(d) for d in val.split("x")])
+    bw = True if event["headers"].get("x-voteamerica-bw") == "1" else False
+
+    output_image = extract_signature(input_image, final_size=final_size, bw=bw)
     _, output_arr = cv2.imencode(".jpg", output_image)
     output_bytes = output_arr.tobytes()
+
+    warnings = qualify_signature(output_image, bw=bw)
 
     # Save the input and output to S3 with an assigned ID for diagnostics
     uuid = str(SmallUUID())
@@ -108,7 +116,10 @@ def extract(event: Any, context: Any):
         "image/jpeg",
         base64.b64encode(output_bytes).decode("utf-8"),
         is_base_64=True,
-        extra_headers={"X-VoteAmerica-Signature-UUID": uuid},
+        extra_headers={
+            "X-VoteAmerica-Signature-UUID": uuid,
+            "X-VoteAmerica-Signature-Warnings": ",".join(warnings),
+        },
     )
 
 

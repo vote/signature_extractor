@@ -5,9 +5,16 @@ from multiprocessing import Pool
 
 import cv2
 
-from extractor.extract import extract_signature
+from extractor.extract import extract_signature, qualify_signature
 
 DEBUG = os.environ.get("DEBUG") == "1"
+
+RESIZE = None
+tmp = os.environ.get("RESIZE")
+if tmp:
+    RESIZE = tuple([int(d) for d in tmp.split("x")])
+
+BW = os.environ.get("BW") == "1"
 
 
 def process_file(name: str):
@@ -17,7 +24,11 @@ def process_file(name: str):
     basename, ext = os.path.splitext(name)
     outname = basename + ".out" + ext
 
-    cv2.imwrite(outname, extract_signature(img, enable_debug=DEBUG))
+    outimg = extract_signature(img, final_size=RESIZE, bw=BW, enable_debug=DEBUG)
+    cv2.imwrite(outname, outimg)
+    warnings = qualify_signature(outimg, bw=BW, enable_debug=DEBUG)
+    if warnings:
+        print(f"{name}: {warnings}")
 
 
 def main():
