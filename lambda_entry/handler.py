@@ -49,7 +49,7 @@ def cors_response(
             "Content-Type": content_type,
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Credentials": True,
-            "Access-Control-Allow-Headers": "Content-Type, Accept",
+            "Access-Control-Allow-Headers": "Content-Type, Accept, X-Voteamerica-Bw, X-Voteamerica-Resize-To",
         },
         "body": body,
     }

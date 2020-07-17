@@ -73,6 +73,8 @@ functions:
             headers:
               - Content-Type
               - Accept
+              - X-Voteamerica-Bw
+              - X-Voteamerica-Resize-To
             allowCredentials: false
   post_mms_init:
     handler: lambda_entry.handler.post_mms_init
@@ -86,6 +88,8 @@ functions:
             headers:
               - Content-Type
               - Accept
+              - X-Voteamerica-Bw
+              - X-Voteamerica-Resize-To
             allowCredentials: false
   get_mms_check:
     handler: lambda_entry.handler.get_mms_check
@@ -100,6 +104,8 @@ functions:
             headers:
               - Content-Type
               - Accept
+              - X-Voteamerica-Bw
+              - X-Voteamerica-Resize-To
             allowCredentials: false
   twilio:
     handler: lambda_entry.handler.twilio_mms
