@@ -4,7 +4,7 @@
   "repository": "git@github.com:vote/signature-extractor.git",
   "private": true,
   "dependencies": {
-    "serverless": "^1.67.3",
+    "serverless": "^1.78.1",
     "serverless-apigw-binary": "UnitedIncome/serverless-apigw-binary#ac62ae97766909572585f6cd901c6d8769ef4dd9",
     "serverless-python-requirements": "^5.1.0"
   },
