@@ -4,8 +4,6 @@
     {
       "Effect": "Allow",
       "Action": [
-        "cloudformation:List*",
-        "cloudformation:Get*",
         "cloudformation:ValidateTemplate"
       ],
       "Resource": [
@@ -19,24 +17,11 @@
         "cloudformation:CreateUploadBucket",
         "cloudformation:DeleteStack",
         "cloudformation:Describe*",
-        "cloudformation:UpdateStack"
+        "cloudformation:UpdateStack",
+        "cloudformation:ListStackResources"
       ],
       "Resource": [
         "arn:aws:cloudformation:us-west-2:*:stack/signature-extractor-*/*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "lambda:Get*",
-        "lambda:List*",
-        "lambda:CreateFunction",
-        "lambda:ListTags",
-        "lambda:TagResource",
-        "lambda:UntagResource"
-      ],
-      "Resource": [
-        "*"
       ]
     },
     {
@@ -60,11 +45,33 @@
         "lambda:InvokeFunction",
         "lambda:PublishVersion",
         "lambda:RemovePermission",
-        "lambda:Update*"
+        "lambda:PutProvisionedConcurrencyConfig",
+        "lambda:Update*",
+        "lambda:List*",
+        "lambda:Get*"
       ],
       "Resource": [
         "arn:aws:lambda:us-west-2:*:function:signature-extractor-*-*"
       ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:PassRole",
+        "iam:GetRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::*:role/signature-extractor-*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:DescribeParameters",
+        "ssm:GetParameter",
+        "ssm:GetParameters"
+      ],
+      "Resource": "arn:aws:ssm:us-west-2:*:parameter/signature_extractor.*"
     },
     {
       "Effect": "Allow",
@@ -77,171 +84,36 @@
         "apigateway:UpdateRestApiPolicy"
       ],
       "Resource": [
-        "arn:aws:apigateway:*::/restapis*",
-        "arn:aws:apigateway:*::/apikeys*",
-        "arn:aws:apigateway:*::/usageplans*",
-        "arn:aws:apigateway:*::/apis*",
-        "arn:aws:apigateway:*::/domainnames*",
-        "arn:aws:apigateway:*::/tags*"
+        "arn:aws:apigateway:us-west-2::/restapis/23p5dmgxt6/*",
+        "arn:aws:apigateway:us-west-2::/restapis/23p5dmgxt6",
+        "arn:aws:apigateway:us-west-2::/restapis/rdm2fg9lq9/*",
+        "arn:aws:apigateway:us-west-2::/restapis/rdm2fg9lq9",
+        "arn:aws:apigateway:us-west-2::/restapis/x87g2bmx5a/*",
+        "arn:aws:apigateway:us-west-2::/restapis/x87g2bmx5a"
       ]
     },
     {
       "Effect": "Allow",
       "Action": [
-        "iam:PassRole"
+        "apigateway:GET"
       ],
       "Resource": [
-        "arn:aws:iam::*:role/signature-extractor-*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": "kinesis:*",
-      "Resource": [
-        "arn:aws:kinesis:*:*:stream/signature-extractor-*-us-west-2"
+        "arn:aws:apigateway:us-west-2::/restapis"
       ]
     },
     {
       "Effect": "Allow",
       "Action": [
-        "iam:GetRole",
-        "iam:CreateRole",
-        "iam:PutRolePolicy",
-        "iam:DeleteRolePolicy",
-        "iam:DeleteRole"
+        "apigateway:GET",
+        "apigateway:POST",
+        "apigateway:PUT",
+        "apigateway:DELETE",
+        "apigateway:PATCH"
       ],
       "Resource": [
-        "arn:aws:iam::*:role/signature-extractor-*-us-west-2-lambdaRole"
+        "arn:aws:apigateway:us-west-2::/domainnames/signature-extractor-*.voteamerica.io/*",
+        "arn:aws:apigateway:us-west-2::/domainnames/signature-extractor-*.voteamerica.io"
       ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "cloudwatch:GetMetricStatistics"
-      ],
-      "Resource": [
-        "*"
-      ]
-    },
-    {
-      "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream"
-      ],
-      "Resource": [
-        "arn:aws:logs:us-west-2:*:*"
-      ],
-      "Effect": "Allow"
-    },
-    {
-      "Action": [
-        "logs:PutLogEvents"
-      ],
-      "Resource": [
-        "arn:aws:logs:us-west-2:*:*"
-      ],
-      "Effect": "Allow"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "logs:DescribeLogStreams",
-        "logs:DescribeLogGroups",
-        "logs:FilterLogEvents"
-      ],
-      "Resource": [
-        "*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "events:Put*",
-        "events:Remove*",
-        "events:Delete*"
-      ],
-      "Resource": [
-        "arn:aws:events:*:*:rule/signature-extractor-*-us-west-2"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "events:DescribeRule"
-      ],
-      "Resource": [
-        "arn:aws:events:us-west-2:*:rule/signature-extractor-*-*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "dynamodb:*"
-      ],
-      "Resource": [
-        "arn:aws:dynamodb:us-west-2:*:table/esign-connections-*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:CreateBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::voteamerica-signature-extractor",
-        "arn:aws:s3:::voteamerica-signature-extractor/*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ssm:DescribeParameters"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ssm:GetParameter"
-      ],
-      "Resource": "arn:aws:ssm:us-west-2:*:parameter/signature_extractor.*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "acm:ListCertificates"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "cloudfront:UpdateDistribution"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "route53:ListHostedZones",
-        "route53:GetHostedZone",
-        "route53:ListResourceRecordSets"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "route53:ChangeResourceRecordSets"
-      ],
-      "Resource": "arn:aws:route53:::hostedzone/Z1TTQATVKSS3HL"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "iam:CreateServiceLinkedRole"
-      ],
-      "Resource": "arn:aws:iam::*:role/aws-service-role/ops.apigateway.amazonaws.com/AWSServiceRoleForAPIGateway"
     }
   ]
 }
