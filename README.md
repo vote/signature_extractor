@@ -3,6 +3,8 @@
 Extracts clean, black-and-white images of signatures from user-captured photos
 of a signature.
 
+[Read more about this system on our blog](https://medium.com/voteamerica/the-computer-vision-tech-that-helped-15-000-voters-request-a-ballot-online-3bd28961b907).
+
 ## Online Demo
 
 You can try out the code on [http://esign-demo.voteamerica.com/](http://esign-demo.voteamerica.com/).
